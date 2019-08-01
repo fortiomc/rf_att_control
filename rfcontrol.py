@@ -19,7 +19,10 @@ class RfControl:
         """
         Construct rf control object
         :param timeout: instrument default timeout value
+        :type timeout: int
         :param line_termination: line termination pattern
+        :type line_termination: str
+        :raises: NameError
         """
         # Initiate resource manager for pyvisa-py backend
         self.resource_mgr = visa.ResourceManager('@py')
@@ -46,14 +49,16 @@ class RfControl:
     def get_instrument_names(self):
         """
         Get instrument names for available VISA units
-        :return: list: istrument names list to reference for control operations
+        :return: Istrument names list to reference for control operations
+        :rtype: list
         """
         return list(self.instruments.keys())
 
     def get_available_gain_values(self):
         """
         Get possible attenuation values for all available instruments
-        :return: {str: list}: Dictionary of attenuator name and possible attenuation values list
+        :return: Dictionary of attenuator name and possible attenuation values list
+        :rtype: dict
         """
         return self.att_values_allowed
 
@@ -61,8 +66,10 @@ class RfControl:
     def get_att_value(self, instrument_name):
         """
         Get current attenuation setting for particular attenuator identified by 'instrument_name'
-        :param instrument_name: string, instrument name to handle
-        :return: status, att_val, msg: execution status, current attenuation value setting, dB, error message
+        :param instrument_name: instrument name to handle
+        :type instrument_name: string
+        :return: execution status, current attenuation value setting(dB), error message
+        :rtype: bool, int, str
         """
         status = False
         att_val = None
@@ -78,9 +85,12 @@ class RfControl:
     def set_att_value(self, instrument_name, att_value):
         """
         Set attenuation value for specific instrument if possible
-        :param instrument_name: string, instrument name to handle
-        :param att_value: float, attenuation value in dB
-        :return: status, att_val, msg: execution status, current attenuation value setting, dB, error message
+        :param instrument_name: instrument name to handle
+        :type instrument_name: str
+        :param att_value: attenuation value in dB
+        :type att_value: float
+        :return: execution status, current attenuation value setting(dB), error message
+        :rtype: bool, int, str
         """
         status = False
         att_val = None
@@ -99,9 +109,10 @@ class RfControl:
     def set_step_up(self, instrument_name):
         """
         Increase attenuation value by one step
-        :param instrument_name: string, instrument name to handle
-        :param att_value: float, attenuation value in dB
-        :return: status, att_val, msg: execution status, current attenuation value setting, dB, error message
+        :param instrument_name: instrument name to handle
+        :type instrument_name: str
+        :return: execution status, current attenuation value setting(dB), error message
+        :rtype: bool, int, str
         """
         status = False
         att_val = None
@@ -118,8 +129,9 @@ class RfControl:
         """
         Decrease attenuation value by one step
         :param instrument_name: string, instrument name to handle
-        :param att_value: float, attenuation value in dB
-        :return: status, att_val, msg: execution status, current attenuation value setting, dB, error message
+        :type instrument_name: str
+        :return: execution status, current attenuation value setting(dB), error message
+        :rtype: bool, int, str
         """
         status = False
         att_val = None
@@ -136,18 +148,19 @@ class RfControl:
     def __del__(self):
         """
         Destructor for resources and resource manager instance
-        :return:
         """
         for ins in self.instruments.values():
             ins.close()
         self.resource_mgr.close()
 
 def get_acm_ctrl_list(interfaces_list):
-    '''
+    """
     Return list of ACM interfaces corresponding to target VISA devices
     :param interfaces_list: list of strings referring possible VISA addresses by control lines
-    :return: list: list of available ACM-managed addresses for VISA devices
-    '''
+    :type interfaces_list: list
+    :return: list of available ACM-managed addresses for VISA devices
+    :rtype: list
+    """
     return [elem for elem in interfaces_list if 'ACM' in elem]
 
 if __name__ == '__main__':
